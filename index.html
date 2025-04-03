@@ -6,15 +6,30 @@
     <title>Cálculo de Tempo</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-color: #f4f4f4;
+            --text-color: #000;
+            --card-bg: #fff;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #121212;
+                --text-color: #fff;
+                --card-bg: #1e1e1e;
+            }
+        }
+
         body {
             font-family: 'JetBrains Mono', monospace;
             text-align: left;
             margin: 20px;
-            background: #f4f4f4;
+            background: var(--bg-color);
+            color: var(--text-color);
         }
         .result {
-            font-size: 14px;            
-            background: #fff;
+            font-size: 16px;
+            background: var(--card-bg);
             padding: 10px;
             margin: 5px 0;
             border-left: 5px solid #007acc;
@@ -25,33 +40,41 @@
     <div id="results"></div>
     <script>
         function calcularDiferenca(dataInicial) {
-            let inicio = new Date(dataInicial);
+            let inicio = new Date(dataInicial + 'T00:00:00');
             let hoje = new Date();
+            hoje.setHours(0, 0, 0, 0);
+            
             let anos = hoje.getFullYear() - inicio.getFullYear();
             let meses = hoje.getMonth() - inicio.getMonth();
             let dias = hoje.getDate() - inicio.getDate();
+            
             if (dias < 0) {
+                let ultimoDiaMesAnterior = new Date(hoje.getFullYear(), hoje.getMonth(), 0).getDate();
+                dias += ultimoDiaMesAnterior;
                 meses--;
-                dias += new Date(hoje.getFullYear(), hoje.getMonth(), 0).getDate();
             }
+            
             if (meses < 0) {
                 anos--;
                 meses += 12;
             }
+            
             return `${anos} years, ${meses} months, ${dias} days`;
         }
+        
         let datas = {
             'Work': '2017-11-06',
             'Age': '1988-03-22',
             'S2': '2007-04-04',
             'Marriage': '2013-04-04'
         };
+        
         let resultsDiv = document.getElementById('results');
         for (let evento in datas) {
             let diff = calcularDiferenca(datas[evento]);
             let p = document.createElement('p');
             p.classList.add('result');
-            p.innerHTML = `<strong>${evento}:</strong> ${diff}`;
+            p.innerHTML = `<strong>${evento}:</strong> ${diff} (${datas[evento]})`;
             resultsDiv.appendChild(p);
         }
     </script>
